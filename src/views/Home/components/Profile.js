@@ -23,6 +23,7 @@ const beforeUpload = (file) => {
 };
 
 const Profile = ({ visible, onCancel, user }) => {
+  console.log("Profile -> user", user)
   const [isLoading, setIsLoading] = useState(false);
   const [isloadImg, setIsLoadImg] = useState(false);
   const [form] = Form.useForm();
@@ -36,7 +37,6 @@ const Profile = ({ visible, onCancel, user }) => {
         .validateFields()
         .then((values) => {
           form.resetFields();
-          console.log(values);
           save("verified", {
             ...user,
             avatar: image,

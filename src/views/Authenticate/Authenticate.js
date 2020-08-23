@@ -19,12 +19,13 @@ const Authenticate = () => {
     setIsLoading(true);
     setTimeout(() => {
       try {
-        const user = get("users").find((user) => {
+        const users = get("users");
+        const i = get("users").findIndex((user) => {
           return user.username === e.username;
         });
-        if (user) {
-          if (user.password === e.password) {
-            save("verified", user);
+        if (users[i]) {
+          if (users[i].password === e.password) {
+            save("verified", { ...users[i], id: i });
             history.push("/");
           } else {
             message.error("Incorrect password");

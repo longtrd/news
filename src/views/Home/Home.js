@@ -20,7 +20,7 @@ import { Footer } from "../../components";
 import { DetailArticle, Profile } from "./components";
 import { getTopHeadlines } from "../../apis/topHeadlines";
 import { getEverything } from "../../apis/everything";
-import { remove, get } from "../../services/localStorage";
+import { remove, get, save } from "../../services/localStorage";
 
 import "./home.less";
 
@@ -105,6 +105,9 @@ const Home = (props) => {
                 </Menu.Item>
                 <Menu.Item
                   onClick={() => {
+                    let users = get("users")
+                    users.splice(user.id, 1, user)
+                    save("users", users);
                     remove("verified");
                     history.push("/");
                   }}
