@@ -1,0 +1,13 @@
+body {
+  background: #f0f2f5;
+  font-family: Verdana, Geneva, sans-serif;
+}
+a {
+  color: #696969;
+  -webkit-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+  text-decoration: none;
+}
+a:hover {
+  color: #696969;
+}

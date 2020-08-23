@@ -1,8 +1,5 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
-import { GoogleOutlined, FacebookOutlined } from "@ant-design/icons";
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
-import { GoogleLogin } from "react-google-login";
 
 const layout = {
   labelCol: {
@@ -39,6 +36,10 @@ const LoginForm = (props) => {
       onFinishFailed={onFinishFailed}
       className="login-form"
     >
+      <div style={{ textAlign: "center", marginBottom: 20 }}>
+        <img className="logo" src={require("../img/logo-mini.jpg")} alt="" />
+      </div>
+
       <Form.Item
         label="Username"
         name="username"
@@ -73,36 +74,17 @@ const LoginForm = (props) => {
       )}
       <div style={{ textAlign: "right" }}>
         <Form.Item {...tailLayout}>
+          <Button
+            style={{ marginRight: 5 }}
+            type="outline"
+            onClick={props.setVisible}
+          >
+            Register
+          </Button>
           <Button type="primary" htmlType="submit" loading={props.isLoading}>
             Login
           </Button>
         </Form.Item>
-      </div>
-      <div style={{ marginTop: -15, textAlign: "center", marginBottom: 15 }}>
-        <span>Login with:</span>
-        <FacebookLogin
-          appId="575722943079735"
-          fields="name,email,picture"
-          render={(renderProps) => (
-            <FacebookOutlined
-              onClick={renderProps.onClick}
-              className="login-icon"
-            />
-          )}
-          callback={props.response}
-        />
-        <GoogleLogin
-          clientId="758534345117-21ik6mvlb7lfg4saipb6345coao6100t.apps.googleusercontent.com"
-          render={(renderProps) => (
-            <GoogleOutlined
-              className="login-icon"
-              onClick={renderProps.onClick}
-              disabled={renderProps.disabled}
-            />
-          )}
-          buttonText="Login"
-          onSuccess={props.response}
-        />
       </div>
     </Form>
   );

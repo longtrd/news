@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { message } from "antd";
 
-import { LoginForm } from "./components";
+import { LoginForm, Register } from "./components";
+import { get, save } from "../../services/localStorage";
 
 const Authenticate = () => {
   const history = useHistory();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [visibleRegister, setVisibleRegister] = useState(false);
 
   useEffect(() => {
     document.title = "Login";
@@ -16,23 +18,26 @@ const Authenticate = () => {
   const handleSubmitLoginForm = (e) => {
     setIsLoading(true);
     setTimeout(() => {
-      if (e.username === "user" && e.password === "123456") {
-        localStorage.setItem("verified", true);
-        history.push("/");
-      } else {
-        setError("Invalid login");
+      try {
+        const user = get("users").find((user) => {
+          return user.username === e.username;
+        });
+        if (user) {
+          if (user.password === e.password) {
+            save("verified", user);
+            history.push("/");
+          } else {
+            message.error("Incorrect password");
+          }
+        } else {
+          message.error("This user was not found");
+        }
+      } catch (error) {
+        message.error("No account is created");
       }
+
       setIsLoading(false);
     }, 1000);
-  };
-
-  const response = (e) => {
-    if (e.accessToken) {
-      localStorage.setItem("verified", true);
-      history.push("/");
-    } else {
-      setError("Invalid login");
-    }
   };
 
   return (
@@ -46,9 +51,12 @@ const Authenticate = () => {
     >
       <LoginForm
         handleSubmitLoginForm={(e) => handleSubmitLoginForm(e)}
-        response={(e) => response(e)}
         isLoading={isLoading}
-        error={error}
+        setVisible={() => setVisibleRegister(true)}
+      />
+      <Register
+        visible={visibleRegister}
+        onCancel={() => setVisibleRegister(false)}
       />
     </div>
   );

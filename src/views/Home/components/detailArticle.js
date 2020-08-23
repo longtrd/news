@@ -16,7 +16,7 @@ const detailArticle = ({ visible, handleCancel, article }) => {
       <h1>{article.title}</h1>
       <div className="detail-author">
         <h3>
-          {article.author} •{" "}
+          {article.author || 'unknow'} •{" "}
           {moment(article.publishedAt).startOf("hour").fromNow()}
         </h3>
         <h3>source: {"source" in article && article.source.name} </h3>

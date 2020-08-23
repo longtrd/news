@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import queryString from "query-string";
-import { LoadingOutlined } from "@ant-design/icons";
+import { LoadingOutlined, UserOutlined } from "@ant-design/icons";
 import {
   Layout,
   Card,
@@ -10,18 +10,23 @@ import {
   Row,
   Col,
   Pagination,
+  Avatar,
+  Dropdown,
+  Menu,
 } from "antd";
 
 // import { Story } from "./components";
 import { Footer } from "../../components";
-import { DetailArticle } from "./components";
+import { DetailArticle, Profile } from "./components";
 import { getTopHeadlines } from "../../apis/topHeadlines";
 import { getEverything } from "../../apis/everything";
+import { remove, get } from "../../services/localStorage";
 
 import "./home.less";
 
 const { Header, Content } = Layout;
 const loadingIcon = <LoadingOutlined style={{ fontSize: 80 }} spin />;
+
 const optionsSearchBy = [
   { value: false, label: "Top headlines" },
   { value: "Bitcoin", label: "Bitcoin" },
@@ -41,6 +46,12 @@ const Home = (props) => {
   const [data, setData] = useState({ hits: [], nbPages: 0 });
   const [visibleDetails, setVisibleDetails] = useState(false);
   const [article, setArticle] = useState({});
+  const [user, setUser] = useState(get("verified"));
+  const [visibleProfile, setVisibleProfile] = useState(false);
+
+  useEffect(() => {
+    setUser(get("verified"));
+  }, [visibleProfile]);
 
   useEffect(() => {
     const getArticles = async (query) => {
@@ -70,9 +81,28 @@ const Home = (props) => {
       <Header>
         <div className="header">
           <Link to="/">
-            <img className="logo" src={require("./images/h-logo.svg")} alt="" />
+            <img className="logo" src={require("./images/logo.svg")} alt="" />
           </Link>
           <div style={{ flex: 1 }}></div>
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item onClick={() => setVisibleProfile(true)}>
+                  Profile
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() => {
+                    remove("verified");
+                    history.push("/");
+                  }}
+                >
+                  Logout
+                </Menu.Item>
+              </Menu>
+            }
+          >
+            <Avatar size={50} icon={<UserOutlined />} src={user.avatar} />
+          </Dropdown>
         </div>
       </Header>
       <Content className="h-content">
@@ -87,7 +117,7 @@ const Home = (props) => {
               <Cascader
                 options={optionsSearchBy}
                 changeOnSelect
-                defaultValue={[query.q && "Top headlines"]}
+                defaultValue={[query.q === false ? "Top headlines" : query.q]}
                 onChange={(sort) => {
                   console.log(sort[0]);
                   window.scrollTo(0, 0);
@@ -112,7 +142,14 @@ const Home = (props) => {
               <>
                 <Row gutter={32}>
                   {data.articles.map((article, index) => (
-                    <Col className="gutter-row" lg={6} md={8} sm={12} xs={24} key={index}>
+                    <Col
+                      className="gutter-row"
+                      lg={6}
+                      md={8}
+                      sm={12}
+                      xs={24}
+                      key={index}
+                    >
                       <Card
                         hoverable
                         style={{ marginBottom: 30 }}
@@ -166,6 +203,11 @@ const Home = (props) => {
           visible={visibleDetails}
           handleCancel={() => setVisibleDetails(false)}
           article={article}
+        />
+        <Profile
+          visible={visibleProfile}
+          onCancel={() => setVisibleProfile(false)}
+          user={user}
         />
       </Content>
       <Footer />

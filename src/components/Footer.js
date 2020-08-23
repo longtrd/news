@@ -4,14 +4,11 @@ const Footer = () => {
   return (
     <Layout.Footer style={{ textAlign: "center" }}>
       <ul className="Footer_list">
-        <li>
-        
-            Halocom
-        </li>
+        <li>longtran071098@gmail.com</li>
         <li>•</li>
         <li>
           <a
-            href="https://hn.algolia.com/api"
+            href="https://newsapi.org/"
             target="_blank"
             rel="noopener noreferrer"
           >
