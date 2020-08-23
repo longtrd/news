@@ -43,7 +43,7 @@ const Home = (props) => {
     q: qs.q || false,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState({ hits: [], nbPages: 0 });
+  const [data, setData] = useState({ articles: [] });
   const [visibleDetails, setVisibleDetails] = useState(false);
   const [article, setArticle] = useState({});
   const [user, setUser] = useState(get("verified"));
@@ -52,6 +52,14 @@ const Home = (props) => {
   useEffect(() => {
     setUser(get("verified"));
   }, [visibleProfile]);
+
+  useEffect(() => {
+    const qs = queryString.parse(props.location.search);
+    setQuery({
+      page: parseInt(qs.page) || 1,
+      q: qs.q || false,
+    });
+  }, [setQuery, props.location.search]);
 
   useEffect(() => {
     const getArticles = async (query) => {
@@ -66,9 +74,14 @@ const Home = (props) => {
           res = await getEverything(queryString.stringify(query));
         }
 
-        setData(res.data);
+        if (res.status === 200) {
+          setData(res.data);
+        } else {
+          setData({ articles: [] });
+        }
       } catch (err) {
         console.log(err);
+        setData({ articles: [] });
       }
       setIsLoading(false);
       document.title = "News";
